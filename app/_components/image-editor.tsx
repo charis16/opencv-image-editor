@@ -37,7 +37,7 @@ export default function ImageEditor() {
   useEffect(() => {
     const loadOpenCv = async () => {
       const script = document.createElement("script");
-      script.src = "/libs/OpenCV.js";
+      script.src = "/libs/openCV.js";
       script.async = true;
       script.onload = () => {
         console.log("OpenCV loaded");
