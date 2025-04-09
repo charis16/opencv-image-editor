@@ -1,37 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 👤 About Me
 
-## Getting Started
+**Muhammad Charis Aziz**  
+I am a frontend developer passionate about building interactive, user-centric applications with modern technologies.  
+This project was created to demonstrate skills in UI design, real-time image processing with OpenCV.js, and seamless UX using Next.js.
 
-First, run the development server:
+📧 Email: [muhammad.charis.az@gmail.com](mailto:muhammad.charis.az@gmail.com)  
+💼 Open to frontend developer roles — especially those involving visual applications, creative UI, and performance-driven code.
+
+# Image Editor (Next.js + OpenCV.js)
+
+Welcome to the **Image Editor** — a responsive image editing web app built with **Next.js** and powered by **OpenCV.js** for real-time image processing.  
+This project demonstrates advanced frontend interaction, UI/UX handling, and client-side image manipulation in a modern tech stack.
+
+---
+
+## ✨ Features
+
+- **Real-Time Image Adjustment**  
+  Modify image properties such as brightness, contrast, and saturation with instant feedback.
+
+- **Powered by OpenCV.js**  
+  Use OpenCV's powerful capabilities directly in the browser for image processing.
+
+- **Download Edited Image**  
+  Easily save the modified image without any server-side processing.
+
+- **Mobile-Friendly UI**  
+  Fully responsive and optimized for touch interactions.
+
+- **Smooth Drag Drawer Panel**  
+  Bottom sheet UX with drag-to-open and drag-to-hide, mimicking native mobile experience.
+
+---
+
+## 🛠 Technologies Used
+
+- **Framework**: [Next.js](https://nextjs.org)
+- **Image Processing**: [OpenCV.js](https://docs.opencv.org/4.x/d5/d10/tutorial_js_root.html)
+- **Animations & Gestures**: [Framer Motion](https://www.framer.com/motion/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com)
+- **Client Image Handling**: HTML5 Canvas API
+
+---
+
+## 🚀 Installation
 
 ```bash
+git clone https://github.com/your-username/image-editor.git
+cd image-editor
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# opencv-image-editor
