@@ -28,9 +28,6 @@ This project demonstrates advanced frontend interaction, UI/UX handling, and cli
 - **Mobile-Friendly UI**  
   Fully responsive and optimized for touch interactions.
 
-- **Smooth Drag Drawer Panel**  
-  Bottom sheet UX with drag-to-open and drag-to-hide, mimicking native mobile experience.
-
 ---
 
 ## 🛠 Technologies Used
