@@ -1,10 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cv: any;
+  }
+}
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import { Image as ImageIcon, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,6 +23,7 @@ export default function ImageEditor() {
   const [panelVisible, setPanelVisible] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [offsetY, setOffsetY] = useState(0);
 
@@ -24,6 +32,20 @@ export default function ImageEditor() {
     const maxHeight = 0.6 * vh; // 60vh
     const visibleHandle = 32; // tinggi handle yg ingin ditampilkan
     setOffsetY(maxHeight - visibleHandle);
+  }, []);
+
+  useEffect(() => {
+    const loadOpenCv = async () => {
+      const script = document.createElement("script");
+      script.src = "/libs/OpenCV.js";
+      script.async = true;
+      script.onload = () => {
+        console.log("OpenCV loaded");
+      };
+      document.body.appendChild(script);
+    };
+
+    loadOpenCv();
   }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +59,68 @@ export default function ImageEditor() {
     reader.readAsDataURL(file);
   };
 
+  const applyFilters = useCallback(() => {
+    if (!imageRef.current || !canvasRef.current || !window.cv) return;
+
+    const img = imageRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Pastikan ukuran canvas match dengan gambar
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+
+    const cv = window.cv;
+
+    const src = cv.imread(img);
+    const dst = new cv.Mat();
+
+    // Apply brightness and contrast
+    const alpha = contrast / 100;
+    const beta = brightness - 100;
+    src.convertTo(dst, -1, alpha, beta);
+
+    // Convert to HSV for saturation adjustment
+    const hsv = new cv.Mat();
+    cv.cvtColor(dst, hsv, cv.COLOR_RGB2HSV);
+
+    const channels = new cv.MatVector();
+    cv.split(hsv, channels);
+
+    const saturationChannel = channels.get(1);
+    const saturationMat = new cv.Mat();
+    saturationMat.create(
+      saturationChannel.rows,
+      saturationChannel.cols,
+      saturationChannel.type(),
+    );
+    saturationMat.setTo(new cv.Scalar(saturation / 100));
+
+    cv.multiply(saturationChannel, saturationMat, saturationChannel);
+    channels.set(1, saturationChannel);
+
+    cv.merge(channels, hsv);
+    cv.cvtColor(hsv, dst, cv.COLOR_HSV2RGB);
+
+    // Show result
+    cv.imshow(canvas, dst);
+
+    // Clean up
+    src.delete();
+    dst.delete();
+    hsv.delete();
+    saturationChannel.delete();
+    saturationMat.delete();
+    channels.delete();
+  }, [brightness, contrast, saturation]);
+
+  useEffect(() => {
+    if (imageSrc) {
+      applyFilters();
+    }
+  }, [brightness, contrast, saturation, imageSrc, applyFilters]);
+
   const handleReset = () => {
     setBrightness(100);
     setContrast(100);
@@ -44,18 +128,10 @@ export default function ImageEditor() {
   };
 
   const handleDownload = () => {
-    if (!imageRef.current) return;
-    const canvas = document.createElement("canvas");
-    const img = imageRef.current;
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`;
-    ctx.drawImage(img, 0, 0);
+    if (!canvasRef.current) return;
     const link = document.createElement("a");
     link.download = "adjusted-image.png";
-    link.href = canvas.toDataURL();
+    link.href = canvasRef.current.toDataURL();
     link.click();
   };
 
@@ -97,16 +173,16 @@ export default function ImageEditor() {
                 }}>
                 <Trash className='w-4 h-4' />
               </Button>
-              <Image
-                ref={imageRef}
-                src={imageSrc}
-                alt='Preview'
+              <canvas
+                ref={canvasRef}
                 className='w-full h-full object-cover'
-                style={{
-                  filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%)`,
-                }}
-                width={500}
-                height={667}
+              />
+              <img
+                ref={imageRef}
+                src={imageSrc || ""}
+                alt='hidden'
+                className='hidden'
+                onLoad={applyFilters}
               />
             </motion.div>
           )}
